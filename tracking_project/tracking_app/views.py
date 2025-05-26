@@ -67,7 +67,15 @@ class UserLastLocationView(APIView):
 
 class MapView(APIView):
     def get(self, request):
+        user_id = request.GET.get('user_id')
+        device_id = request.GET.get('device_id')
+
         devices = Device.objects.filter(active=True, assigned_user__isnull=False)
+
+        if user_id:
+            devices = devices.filter(assigned_user__id=user_id)
+        if device_id:
+            devices = devices.filter(id=device_id)
 
         result = []
 
@@ -88,6 +96,7 @@ class MapView(APIView):
             })
 
         return Response(result)
+
 
 class DeviceListView(ListAPIView):
     queryset = Device.objects.all()
