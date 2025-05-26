@@ -1,0 +1,9 @@
+venv/
+.env
+__pycache__/
+*.pyc
+db.sqlite3
+tracking_app/migrations/__pycache__/
+tracking_app/migrations/*.pyc
+!tracking_app/migrations/*.py
+.DS_Store
