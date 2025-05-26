@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -71,7 +72,6 @@ class MapView(APIView):
         result = []
 
         for device in devices:
-            # Pobierz ostatni ping
             last_ping = device.pings.order_by('-ping_time').first()
             if not last_ping:
                 continue
@@ -88,3 +88,7 @@ class MapView(APIView):
             })
 
         return Response(result)
+
+class DeviceListView(ListAPIView):
+    queryset = Device.objects.all()
+    serializer_class = DeviceSerializer
