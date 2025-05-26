@@ -22,23 +22,19 @@
     pip install --upgrade pip
     pip install -r requirements.txt
     ```
-3. Change directory to the project folder:
-      ```bash
-    cd tracking_project
-    ```
    
-4. Run migrations:
+3. Run migrations:
 
    ```bash
     python manage.py migrate
     ```
 
-5. Run the development server:
+4. Run the development server:
 
    ```bash
     python manage.py runserver
     ```
-6. Open browser and visit:
+5. Open browser and visit:
    ```plaintext
     http://127.0.0.1:8000/api/
     ```
@@ -50,7 +46,7 @@
 | POST   | `/devices/{id}/assign/`   | Assign a device to a user and activate it       |
 | POST   | `/devices/{id}/location/` | Send a location ping from an active device      |
 | GET    | `/users/{id}/location/`   | Get the last known location of a user          |
-| GET    | `/map/`                   | Get latest locations of all currently assigned devices |     |
+| GET    | `/map/`                   | Get latest locations of all currently assigned devices. Supports filtering by query parameters: `device_id`, `user_id` |     |
 | GET    | `/devices/`               | List all devices with their assignment status          |
 | POST   | `/devices/{id}/unassign/` | Unassign and deactivate a device                  |
 
