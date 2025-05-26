@@ -92,3 +92,14 @@ class MapView(APIView):
 class DeviceListView(ListAPIView):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
+
+class DeviceUnassignView(APIView):
+    def post(self, request, id):
+        device = get_object_or_404(Device, id=id)
+
+        device.assigned_user = None
+        device.active = False
+        device.save()
+
+        serializer = DeviceSerializer(device)
+        return Response(serializer.data)
