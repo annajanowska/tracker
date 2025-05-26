@@ -46,3 +46,45 @@ class DeviceLocationView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserLastLocationView(APIView):
+    def get(self, request, id):
+        user = get_object_or_404(User, id=id)
+
+        device = user.devices.filter(active=True).first()
+        if not device:
+            return Response({"error": "User has no active device assigned."}, status=status.HTTP_404_NOT_FOUND)
+
+        last_ping = device.pings.order_by('-ping_time').first()
+        if not last_ping:
+            return Response({"error": "No location pings found for user's device."}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = LocationPingSerializer(last_ping)
+        return Response(serializer.data)
+
+
+class MapView(APIView):
+    def get(self, request):
+        devices = Device.objects.filter(active=True, assigned_user__isnull=False)
+
+        result = []
+
+        for device in devices:
+            # Pobierz ostatni ping
+            last_ping = device.pings.order_by('-ping_time').first()
+            if not last_ping:
+                continue
+
+            result.append({
+                "user": {
+                    "id": device.assigned_user.id,
+                    "name": device.assigned_user.name
+                },
+                "device_id": device.id,
+                "latitude": last_ping.latitude,
+                "longitude": last_ping.longitude,
+                "timestamp": last_ping.ping_time.isoformat()
+            })
+
+        return Response(result)
